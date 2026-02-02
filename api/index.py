@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 app = Flask(__name__)
-excel_file_path = 'data.xlsx'  # The path to the Excel file in the repo
+excel_file_path = 'PUE_Datenbank.xlsx'  # The path to the Excel file in the repo
 
 @app.route('/upload', methods=['POST'])
 def upload_data():
