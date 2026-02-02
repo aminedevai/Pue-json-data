@@ -5,12 +5,13 @@ Provides REST API and web interface for adding data to Excel
 """
 
 from flask import Flask, request, jsonify, send_file, render_template_string
-from pue_data_collector import PUEDataCollector
+from pue_data_collector import get_collector
 import json
 from datetime import datetime
 
 app = Flask(__name__)
-collector = PUEDataCollector()
+collector = get_collector()
+collector.add_entry(data)
 
 # HTML Template (embedded for simplicity)
 HTML_TEMPLATE = '''
@@ -266,6 +267,13 @@ HTML_TEMPLATE = '''
 '''
 
 @app.route('/')
+def healthcheck():
+    return {
+        "status": "ok",
+        "service": "pue-json-data",
+        "mode": "vercel-serverless"
+    }
+    
 def index():
     """Serve the main page"""
     return render_template_string(HTML_TEMPLATE)
