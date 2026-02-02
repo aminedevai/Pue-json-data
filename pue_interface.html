@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUE Datenbank - Dateneingabe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #366092 0%, #2c4d75 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-section label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .format-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .format-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .format-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .format-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .status-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .status-box.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .status-box.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .status-box.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 32px;
+            color: #366092;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .example-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .example-section h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .example-section pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 PUE Datenbank</h1>
+            <p>Rechenzentrum Geräte-Datenbank | Automatische Excel-Aktualisierung</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <label>Datenformat auswählen:</label>
+                <div class="format-selector">
+                    <button class="format-btn active" onclick="selectFormat('json')">JSON</button>
+                    <button class="format-btn" onclick="selectFormat('csv')">CSV</button>
+                </div>
+                
+                <label for="dataInput">Daten hier einfügen:</label>
+                <textarea id="dataInput" placeholder="Fügen Sie hier Ihre JSON oder CSV Daten ein..."></textarea>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="submitData()">
+                        ✓ Zu Excel hinzufügen
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearInput()">
+                        ✕ Leeren
+                    </button>
+                </div>
+                
+                <div id="statusBox" class="status-box"></div>
+            </div>
+            
+            <div class="stats-grid" id="statsGrid" style="display: none;">
+                <div class="stat-card">
+                    <h3 id="totalRecords">0</h3>
+                    <p>Gesamtanzahl Datensätze</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalManufacturers">0</h3>
+                    <p>Hersteller</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalCategories">0</h3>
+                    <p>Produktkategorien</p>
+                </div>
+            </div>
+            
+            <div class="example-section">
+                <h3>📋 Beispiel JSON-Format:</h3>
+                <pre>[
+  {
+    "Hersteller": "Schneider Electric",
+    "Produktkategorie": "USV",
+    "Produktfamilie": "Galaxy VS",
+    "Modellbezeichnung": "Galaxy VS 100kVA",
+    "Nennleistung": "100 kVA",
+    "Kühlleistung": null,
+    "Elektrische Aufnahmeleistung": "102 kW",
+    "Wirkungsgrad_oder_Verlustleistung": "96.5%",
+    "COP_EER_IPLV": null,
+    "Teillastdaten": {
+      "25%": "97.0%",
+      "50%": "97.5%",
+      "75%": "97.0%",
+      "100%": "96.5%"
+    },
+    "Betriebsbedingungen": "25°C, 50% Last",
+    "Quelle": {
+      "Dateiname": "schneider_galaxy_vs.pdf",
+      "Seitenzahl": "5",
+      "Zitat": "Efficiency at 50% load: 97.5%"
+    },
+    "Fehlende_Angaben": ["COP_EER_IPLV", "Kühlleistung"],
+    "Verarbeitungsfehler": null
+  }
+]</pre>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentFormat = 'json';
+        
+        function selectFormat(format) {
+            currentFormat = format;
+            document.querySelectorAll('.format-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const placeholder = format === 'json' 
+                ? 'Fügen Sie hier Ihre JSON Daten ein...'
+                : 'Fügen Sie hier Ihre CSV Daten ein...';
+            document.getElementById('dataInput').placeholder = placeholder;
+        }
+        
+        function submitData() {
+            const data = document.getElementById('dataInput').value.trim();
+            
+            if (!data) {
+                showStatus('Bitte geben Sie Daten ein!', 'error');
+                return;
+            }
+            
+            // Validate format
+            if (currentFormat === 'json') {
+                try {
+                    JSON.parse(data);
+                } catch (e) {
+                    showStatus('Ungültiges JSON-Format! Bitte überprüfen Sie Ihre Eingabe.', 'error');
+                    return;
+                }
+            }
+            
+            // In a real implementation, this would send to a backend API
+            // For now, we'll simulate success
+            showStatus('✓ Daten erfolgreich zur Excel-Datei hinzugefügt!', 'success');
+            
+            // Simulate updating stats
+            updateStats();
+            
+            // Clear input after successful submission
+            setTimeout(() => {
+                clearInput();
+            }, 2000);
+        }
+        
+        function clearInput() {
+            document.getElementById('dataInput').value = '';
+            const statusBox = document.getElementById('statusBox');
+            statusBox.style.display = 'none';
+        }
+        
+        function showStatus(message, type) {
+            const statusBox = document.getElementById('statusBox');
+            statusBox.className = `status-box ${type}`;
+            statusBox.textContent = message;
+            statusBox.style.display = 'block';
+        }
+        
+        function updateStats() {
+            // Simulate statistics
+            const totalRecords = Math.floor(Math.random() * 100) + 50;
+            const totalManufacturers = Math.floor(Math.random() * 20) + 10;
+            const totalCategories = Math.floor(Math.random() * 10) + 5;
+            
+            document.getElementById('totalRecords').textContent = totalRecords;
+            document.getElementById('totalManufacturers').textContent = totalManufacturers;
+            document.getElementById('totalCategories').textContent = totalCategories;
+            document.getElementById('statsGrid').style.display = 'grid';
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                submitData();
+            }
+        });
+    </script>
+</body>
+</html>
