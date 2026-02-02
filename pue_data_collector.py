@@ -168,7 +168,13 @@ class PUEDataCollector:
 
 def main():
     """Example usage"""
-    collector = PUEDataCollector()
+  _collector = None
+
+def get_collector():
+    global _collector
+    if _collector is None:
+        _collector = PUEDataCollector("PUE_Datenbank.xlsx")
+    return _collector
     
     # Example JSON data from your GPT
     example_json = """
