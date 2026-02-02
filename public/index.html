@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Excel File</title>
+</head>
+<body>
+    <h1>Update Excel File with JSON/CSV Data</h1>
+    <form id="dataForm">
+        <label for="dataInput">Paste your JSON/CSV data here:</label><br>
+        <textarea id="dataInput" name="dataInput" rows="10" cols="50" required></textarea><br>
+        <input type="submit" value="Update Excel">
+    </form>
+    <script>
+        document.getElementById('dataForm').onsubmit = function(event) {
+            event.preventDefault(); // Prevent form submission
+            const inputData = document.getElementById('dataInput').value;
+            // Here, add logic to handle the JSON/CSV data and update the Excel file
+            console.log('Data submitted:', inputData);
+        };
+    </script>
+</body>
+</html>
