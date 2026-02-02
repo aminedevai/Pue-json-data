@@ -1,0 +1,5 @@
+openpyxl
+flask
+pyyaml
+requests
+pandas
